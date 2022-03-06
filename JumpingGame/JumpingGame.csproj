@@ -116,5 +116,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NezarkaStoreModel\NezarkaStoreModel.csproj">
+      <Project>{870180e4-86ab-4941-b31d-81c5a11d8bf8}</Project>
+      <Name>NezarkaStoreModel</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
