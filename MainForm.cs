@@ -5,9 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 
 namespace JumpingPlatformGame
-{
-
-	
+{	
 	public partial class MainForm : Form
 	{
 		private const int LabelWidth = 30;
