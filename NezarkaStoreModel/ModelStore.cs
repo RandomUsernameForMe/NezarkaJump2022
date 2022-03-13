@@ -6,30 +6,18 @@ using System.IO;
 
 namespace NezarkaBookstoreWeb {
 
-    public interface IBookFactory
+    public interface IBookstoreFactory<T>
     {
-        Book CreateInstance();
+        T CreateInstance();
     }
 
-    public interface ICustomerFactory
+    public class DefaultFactory<T>: IBookstoreFactory<T> where T : new()
     {
-        Customer CreateInstance();
+        public static readonly DefaultFactory<T> Instance = new DefaultFactory<T>();
+        private DefaultFactory() { }
+        public T CreateInstance() => new T();
     }
 
-    public class DefaultBookFactory : IBookFactory
-    {
-        public static readonly DefaultBookFactory Instance = new DefaultBookFactory();
-        private DefaultBookFactory() { }
-        public Book CreateInstance() => new Book();
-    }
-
-    public class DefaultCustomerFactory : ICustomerFactory
-    {
-        public static readonly DefaultCustomerFactory Instance = new DefaultCustomerFactory();
-
-        private DefaultCustomerFactory() { }
-        public Customer CreateInstance() => new Customer();
-    }
 
     public class ModelStore {
         private List<Book> books = new List<Book>();
@@ -50,8 +38,8 @@ namespace NezarkaBookstoreWeb {
 		public Customer GetCustomer(int id) {
 			return customers.Find(c => c.Id == id);
 		}
-        public static ModelStore LoadFrom(TextReader reader) => LoadFrom(reader, DefaultBookFactory.Instance, DefaultCustomerFactory.Instance);
-		public static ModelStore LoadFrom(TextReader reader, IBookFactory bookFactory, ICustomerFactory customerFactory) {
+        public static ModelStore LoadFrom(TextReader reader) => LoadFrom(reader, DefaultFactory<Book>.Instance, DefaultFactory<Customer>.Instance);
+		public static ModelStore LoadFrom(TextReader reader, IBookstoreFactory<Book> bookFactory, IBookstoreFactory<Customer> customerFactory) {
 			var store = new ModelStore();
 
 			try {
@@ -82,8 +70,6 @@ namespace NezarkaBookstoreWeb {
                                 customer.FirstName = tokens[2];
                                 customer.LastName = tokens[3];
                                 customer.DateJoined = null;
-
-
                                 if (tokens.Length >= 6) {
 									customer.DateJoined = new DateTime(int.Parse(tokens[4]), int.Parse(tokens[5]), int.Parse(tokens[6]));
 								}

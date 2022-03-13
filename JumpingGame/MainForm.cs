@@ -14,7 +14,7 @@ namespace JumpingPlatformGame
 		private List<Entity> entities = new List<Entity>();
 		private List<Label> entityLabels = new List<Label>();
 		private Random random = new Random();
-        ModelStore model = ModelStore.LoadFrom(new StreamReader("NezarkaSummer.in"),DefaultBookFactory.Instance,new CustomerViewModelFactory());
+        ModelStore model = ModelStore.LoadFrom(new StreamReader("NezarkaSummer.in"),DefaultFactory<Book>.Instance,new CustomerViewModelFactory());
 
 		public MainForm()
 		{
@@ -100,7 +100,7 @@ namespace JumpingPlatformGame
 		}
 	}
 
-    class CustomerViewModelFactory : ICustomerFactory
+    class CustomerViewModelFactory : IBookstoreFactory<Customer>
     {
         public Customer CreateInstance() => new CustomerViewModel();
     }
