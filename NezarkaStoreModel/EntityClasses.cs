@@ -32,11 +32,6 @@ namespace NezarkaBookstoreWeb {
 				shoppingCart = value;
 			}
 		}
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", FirstName, LastName);
-        }
     }
 
 	public class ShoppingCartItem {

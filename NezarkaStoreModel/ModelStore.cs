@@ -6,6 +6,31 @@ using System.IO;
 
 namespace NezarkaBookstoreWeb {
 
+    public interface IBookFactory
+    {
+        Book CreateInstance();
+    }
+
+    public interface ICustomerFactory
+    {
+        Customer CreateInstance();
+    }
+
+    public class DefaultBookFactory : IBookFactory
+    {
+        public static readonly DefaultBookFactory Instance = new DefaultBookFactory();
+        private DefaultBookFactory() { }
+        public Book CreateInstance() => new Book();
+    }
+
+    public class DefaultCustomerFactory : ICustomerFactory
+    {
+        public static readonly DefaultCustomerFactory Instance = new DefaultCustomerFactory();
+
+        private DefaultCustomerFactory() { }
+        public Customer CreateInstance() => new Customer();
+    }
+
     public class ModelStore {
         private List<Book> books = new List<Book>();
         private List<Customer> customers = new List<Customer>();
@@ -25,8 +50,8 @@ namespace NezarkaBookstoreWeb {
 		public Customer GetCustomer(int id) {
 			return customers.Find(c => c.Id == id);
 		}
-
-		public static ModelStore LoadFrom(TextReader reader) {
+        public static ModelStore LoadFrom(TextReader reader) => LoadFrom(reader, DefaultBookFactory.Instance, DefaultCustomerFactory.Instance);
+		public static ModelStore LoadFrom(TextReader reader, IBookFactory bookFactory, ICustomerFactory customerFactory) {
 			var store = new ModelStore();
 
 			try {
@@ -44,15 +69,22 @@ namespace NezarkaBookstoreWeb {
 					string[] tokens = line.Split(';');
 					switch (tokens[0]) {
 						case "BOOK":
-							store.books.Add(new Book {
-								Id = int.Parse(tokens[1]), Title = tokens[2], Author = tokens[3], Price = decimal.Parse(tokens[4])
-							});
-							break;
-						case "CUSTOMER": {
-								var customer = new Customer {
-									Id = int.Parse(tokens[1]), FirstName = tokens[2], LastName = tokens[3], DateJoined = null
-								};
-								if (tokens.Length >= 6) {
+                            var book = bookFactory.CreateInstance();
+                            book.Id = int.Parse(tokens[1]);
+                            book.Title = tokens[2];
+                            book.Author = tokens[3];
+                            book.Price = decimal.Parse(tokens[4]);
+                            store.books.Add(book);
+                            break;
+						case "CUSTOMER": {								
+                                var customer = customerFactory.CreateInstance();
+                                customer.Id = int.Parse(tokens[1]);
+                                customer.FirstName = tokens[2];
+                                customer.LastName = tokens[3];
+                                customer.DateJoined = null;
+
+
+                                if (tokens.Length >= 6) {
 									customer.DateJoined = new DateTime(int.Parse(tokens[4]), int.Parse(tokens[5]), int.Parse(tokens[6]));
 								}
 								store.customers.Add(customer);

@@ -14,7 +14,7 @@ namespace JumpingPlatformGame
 		private List<Entity> entities = new List<Entity>();
 		private List<Label> entityLabels = new List<Label>();
 		private Random random = new Random();
-        ModelStore model = ModelStore.LoadFrom(new StreamReader("NezarkaSummer.in"));
+        ModelStore model = ModelStore.LoadFrom(new StreamReader("NezarkaSummer.in"),DefaultBookFactory.Instance,new CustomerViewModelFactory());
 
 		public MainForm()
 		{
@@ -99,5 +99,31 @@ namespace JumpingPlatformGame
 			control.Top = worldHeight - (int)entity.Location.Y.Meters - control.Height / 2;
 		}
 	}
+
+    class CustomerViewModelFactory : ICustomerFactory
+    {
+        public Customer CreateInstance() => new CustomerViewModel();
+    }
+
+
+    class CustomerViewModel : Customer
+    {
+        public override string ToString()
+        {
+            var result = FirstName + " " + LastName + " since ";
+            if (DateJoined == null)
+            {
+                result += "always";
+            }
+            else
+            {
+                result += "year " + DateJoined.Value.Year;
+            }
+            return result;
+        }
+    }
+
+
+
 
 }

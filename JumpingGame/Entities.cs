@@ -10,10 +10,7 @@ namespace JumpingPlatformGame
         public virtual Color Color => Color.Black;
         public WorldPoint Location;
 
-        public virtual void Update(Time sec)
-        {
-
-        }
+        public virtual void Update(Time sec) { }
 
     }
     class MovableEntity : Entity
@@ -69,15 +66,15 @@ namespace JumpingPlatformGame
             }
         }
 
-        public CustomerEntity(Customer other)
+        public CustomerEntity(Customer customer)
         {
-            name = other.ToString();
-            if (other.DateJoined == null)
+            name = customer.ToString();
+            if (customer.DateJoined == null)
             {
                 years = -1;
                 return;
             }
-            TimeSpan? timespan = DateTime.Now - other.DateJoined;
+            TimeSpan? timespan = DateTime.Now - customer.DateJoined;
             years = (int)(timespan.Value.TotalDays) / 365;
         }
 
